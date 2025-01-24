@@ -1,10 +1,38 @@
 global_costmap:
   global_frame: map
   robot_base_frame: base_link
-
   update_frequency: 5.0
-  publish_frequency: 5.0
+  publish_frequency: 2.0
   transform_tolerance: 0.5
-  resolution: 0.01
+  resolution: 0.05  # Resolution in meters per pixel
+  
+  # Plugins for the global costmap
+  plugins:
+    - { name: "static_layer", type: "costmap_2d::StaticLayer" }
+    - { name: "obstacle_layer", type: "costmap_2d::ObstacleLayer" }
+    - { name: "inflation_layer", type: "costmap_2d::InflationLayer" }
 
-  static_map: true
+  # Static Layer configuration (map-based)
+  static_layer:
+    map_topic: /map
+    subscribe_to_updates: true
+    track_unknown_space: false
+    mark_unknown_space: false
+    clearing: true
+  
+  # Obstacle Layer configuration
+  obstacle_layer:
+    observation_sources: laser_scan_sensor
+    laser_scan_sensor:
+      data_type: LaserScan
+      topic: /scan  # Ensure this is indented properly
+      marking: true
+      clearing: true
+      obstacle_range: 2.5
+      raytrace_range: 3.0
+
+  # Inflation Layer configuration
+  inflation_layer:
+    inflation_radius: 0.55  # Set your desired inflation radius
+    cost_scaling_factor: 10.0
+    footprint: [[-0.3, -0.3], [0.3, -0.3], [0.3, 0.3], [-0.3, 0.3]]  # Robot's footprint shape

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Arguments -->
+    <arg name="set_base_frame" default="base_link"/>
+    <arg name="set_odom_frame" default="odom"/>
+    <arg name="set_map_frame" default="map"/>
+    <arg name="scan_topic" default="/scan"/>
+
+    <!-- URDF model -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find amcl_mobile_robot)/urdf/robot.urdf.xacro'" />
+
+    <!-- joint state publisher -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="False"/>
+    </node>
+
+    <!-- SLAM Toolbox -->
+    <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" output="screen">
+        <rosparam command="load" file="$(find amcl_mobile_robot)/config/mapper_params_online_async.yaml" />
+    </node>
+
+    <!-- rviz model -->
+    <node pkg="rviz" type="rviz" name="rviz"/>
+</launch>

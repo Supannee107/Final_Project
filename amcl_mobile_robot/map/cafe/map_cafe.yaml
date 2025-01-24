@@ -1,4 +1,4 @@
-image: /home/chollatisp/ros_ws/amcl_ws/src/Final_Project/amcl_mobile_robot/map/cafe/map_cafe.pgm
+image: /home/supannee/Project/src/Final_Project/amcl_mobile_robot/map/cafe/map_cafe.pgm
 resolution: 0.050000
 origin: [-1.642301, -11.961729, 0.000000]
 negate: 0
