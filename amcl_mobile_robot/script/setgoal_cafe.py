@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import rospy
+import csv
+import os
 from geometry_msgs.msg import PoseStamped
 from gazebo_msgs.msg import ModelStates
 from tf.transformations import euler_from_quaternion
@@ -15,6 +17,15 @@ base_link_pose = None
 
 # Robot name in Gazebo
 ROBOT_NAME = "/"
+
+# CSV file path
+CSV_FILE = "cafe(Distance between AMCL and Base Link).csv"
+
+# Initialize CSV file with headers if not exists
+if not os.path.exists(CSV_FILE):
+    with open(CSV_FILE, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Timestamp", "AMCL(X)", "AMCL(Y)", "Base Link(X)", "Base Link(Y)", "Distance between AMCL and Base Link"])
 
 # Callback function to get amcl_pose
 def amcl_pose_callback(msg):
@@ -41,6 +52,9 @@ def compare_poses():
     if amcl_pose and base_link_pose:
         distance = calculate_distance(amcl_pose, base_link_pose)
 
+        # Get timestamp
+        timestamp = rospy.get_time()
+
         # Calculate yaw for both poses
         yaw_amcl = euler_from_quaternion([
             amcl_pose.orientation.x,
@@ -59,6 +73,16 @@ def compare_poses():
         rospy.loginfo("AMCL Pose: [x: %f, y: %f]", amcl_pose.position.x, amcl_pose.position.y)
         rospy.loginfo("Base Link Pose: [x: %f, y: %f]", base_link_pose.position.x, base_link_pose.position.y)
         rospy.loginfo("AMCL Pose vs Base Link Distance: %f", distance)
+
+        # Write data to CSV
+        with open(CSV_FILE, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                timestamp,
+                amcl_pose.position.x, amcl_pose.position.y,
+                base_link_pose.position.x, base_link_pose.position.y,
+                distance
+            ])
     else:
         rospy.loginfo("Waiting for poses to be initialized...")
 
