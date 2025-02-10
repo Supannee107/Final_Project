@@ -23,7 +23,6 @@
 
     </include>
 
-
    <group ns="$(arg robot_namespace)">
 
       <param name="robot_description" command="$(find xacro)/xacro '$(find amcl_mobile_robot)/urdf/robot.urdf.xacro'
@@ -34,15 +33,12 @@
                     -param robot_description 
                     -model $(arg robot_namespace)" />
 
-
       <rosparam command="load" file="$(find amcl_mobile_robot)/config/control_diff.yaml" />
 
       <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="  joint_state_controller
                     velocity_controller
                             "/>
-
    </group>
-
 
    <arg name="set_base_frame" default="base_link"/>
    <arg name="set_odom_frame" default="odom"/>
@@ -65,7 +61,7 @@
       <rosparam command="load" file="$(find amcl_mobile_robot)/config/mapper_params_online_async.yaml" />
    </node>
 
-    <!-- rviz Toolbox -->
+   <!-- rviz Toolbox -->
    <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find amcl_mobile_robot)/rviz/my_robot_config.rviz" />
 </launch>
  
