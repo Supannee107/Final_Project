@@ -20,7 +20,7 @@
 <arg name="robot_namespace" default="/"/>
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find amcl_mobile_robot)/worlds/hexagon.world" />
+        <arg name="world_name" value="$(find amcl_mobile_robot)/worlds/Narrow.world" />
         <arg name="paused" value="$(arg paused)"/>
         <arg name="use_sim_time" value="$(arg use_sim_time)"/>
         <arg name="gui" value="$(arg gui)"/>
@@ -60,7 +60,7 @@
 </node> -->
 
 <!-- Map server -->
-<arg name="map_file" default="/home/supannee/Project/src/Final_Project/amcl_mobile_robot/map/hexagon/hexagon.yaml"/>
+<arg name="map_file" default="/home/supannee/Project/src/Final_Project/amcl_mobile_robot/map/Narrow/Narrow.yaml"/>
 <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
 
