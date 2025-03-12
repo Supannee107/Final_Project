@@ -36,11 +36,13 @@ class MoveBaseWithLogging:
         # สร้างไฟล์ CSV หากยังไม่มี
         with open(self.csv_filename, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Timestamp", "amcl_X", "amcl_Y", "Odom_X", "Odom_Y"])
+            writer.writerow(["AMCL_Timestamp", "amcl_X", "amcl_Y", "Odom_Timestamp", "Odom_X", "Odom_Y"])
 
         # ตัวแปรเก็บค่าล่าสุด
         self.latest_amcl = None
         self.latest_odom = None
+        self.latest_amcl_time = None
+        self.latest_odom_time = None
 
         # ใช้ Thread สำหรับบันทึกตำแหน่ง
         self.logging_thread = threading.Thread(target=self.log_position)
@@ -49,11 +51,13 @@ class MoveBaseWithLogging:
     def amcl_callback(self, msg):
         """ Callback สำหรับรับค่าตำแหน่งจาก amcl """
         self.latest_amcl = msg.pose.pose  # ดึงค่า pose เท่านั้น
-        rospy.loginfo(f"amcl Pose Updated: X={msg.pose.pose.position.x}, Y={msg.pose.pose.position.y}")
+        self.latest_amcl_time = rospy.get_time()
+        rospy.loginfo(f"AMCL Pose Updated: X={msg.pose.pose.position.x}, Y={msg.pose.pose.position.y}")
 
     def odom_callback(self, msg):
         """ Callback สำหรับรับค่าตำแหน่งจาก Odom (Ground Truth) """
         self.latest_odom = msg.pose.pose  # ดึงค่า pose เท่านั้น
+        self.latest_odom_time = rospy.get_time()
         rospy.loginfo(f"Odom Pose Updated: X={msg.pose.pose.position.x}, Y={msg.pose.pose.position.y}")
 
     def log_position(self):
@@ -68,16 +72,18 @@ class MoveBaseWithLogging:
             rospy.sleep(0.1)
             
             if self.latest_amcl and self.latest_odom:
-                # ดึงข้อมูลจาก amcl_pose และ odom
-                timestamp = rospy.get_time()
+                # ดึงข้อมูลจาก amcl_pose และ odom พร้อม time stamp แยกกัน
+                amcl_time = self.latest_amcl_time
                 amcl_x = self.latest_amcl.position.x
                 amcl_y = self.latest_amcl.position.y
+
+                odom_time = self.latest_odom_time
                 odom_x = self.latest_odom.position.x
                 odom_y = self.latest_odom.position.y
 
                 # บันทึกข้อมูลลง list
-                self.data_log.append([timestamp, amcl_x, amcl_y, odom_x, odom_y])
-                rospy.loginfo(f"Logging Data: amcl=({amcl_x}, {amcl_y}) | ODOM=({odom_x}, {odom_y})")
+                self.data_log.append([amcl_time, amcl_x, amcl_y, odom_time, odom_x, odom_y])
+                rospy.loginfo(f"Logging Data: AMCL=({amcl_x}, {amcl_y}) at {amcl_time} | ODOM=({odom_x}, {odom_y}) at {odom_time}")
 
             rate.sleep()
 
@@ -118,7 +124,6 @@ class MoveBaseWithLogging:
             writer.writerows(self.data_log)
 
         rospy.loginfo(f"CSV file saved successfully with {len(self.data_log)} entries.")
-
 
 if __name__ == '__main__':
     try:
