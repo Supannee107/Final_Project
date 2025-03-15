@@ -30,7 +30,7 @@ class MoveBaseWithLogging:
         self.logging = True
         self.lock = threading.Lock()
 
-        self.csv_directory = "/home/supannee/Project/src/Final_Project/amcl_mobile_robot/result/Narrow_Map/5_meter/"
+        self.csv_directory = "/home/supannee/Project/src/Final_Project/amcl_mobile_robot/result/Narrow_Map/5_meter/iter5/"
         self.csv_filename = os.path.join(self.csv_directory, "localization_data_amcl.csv")
         self.system_log_filename = os.path.join(self.csv_directory, "system_usage.csv")
 
