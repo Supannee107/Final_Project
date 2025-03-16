@@ -20,7 +20,7 @@
 <arg name="robot_namespace" default="/"/>
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find amcl_mobile_robot)/worlds/Nomal_obstacle.world" />
+        <arg name="world_name" value="$(find amcl_mobile_robot)/worlds/New.world" />
         <arg name="paused" value="$(arg paused)"/>
         <arg name="use_sim_time" value="$(arg use_sim_time)"/>
         <arg name="gui" value="$(arg gui)"/>

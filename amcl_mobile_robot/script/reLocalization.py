@@ -40,7 +40,7 @@ class AMCLNavigationTest:
         rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.amcl_pose_callback)
 
         # ✅ Ensure directories exist at the start
-        self.result_directory = "/home/supannee/Project/src/Final_Project/amcl_mobile_robot/result/Normal_Ob/ReLocalization/iter1/"
+        self.result_directory = "/home/supannee/Project/src/Final_Project/amcl_mobile_robot/result/Normal_Ob/unmap/ReLocalization/iter2/"
         os.makedirs(self.result_directory, exist_ok=True)
 
     def get_robot_name(self):
@@ -121,13 +121,13 @@ class AMCLNavigationTest:
 
                 x_true, y_true = (self.amcl_pose.x, self.amcl_pose.y) if self.amcl_pose else (0.0, 0.0)
 
-                x_pose = x_true + random.uniform(-0.0, 1.0)
-                y_pose = y_true + random.uniform(-0.0, 0.0)
+                x_pose = x_true + random.uniform(-1.0, 1.0)
+                y_pose = y_true + random.uniform(-1.0, 1.0)
                 self.publish_initial_pose(x_pose, y_pose)
                 rospy.sleep(2)
 
-                x_goal = x_true + random.uniform(-0.0, 1.0)
-                y_goal = y_true + random.uniform(-0.0, 0.0)
+                x_goal = x_true + random.uniform(-2.0, 2.0)
+                y_goal = y_true + random.uniform(-2.0, 2.0)
 
                 start_time = time.time()
                 self.send_goal(x_goal, y_goal)
